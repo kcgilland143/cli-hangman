@@ -1,3 +1,18 @@
+window.onload = function() {
+  var guess = document.getElementById('guess')
+  var guesses = document.getElementById('guesses')
+  var correctGuesses = document.getElementById('board')
+  var numWrong = document.getElementById('state')
+  hangman = new Game( 
+    document.getElementById('hangman'),
+    guess, correctGuesses, guesses, numWrong 
+    )
+  // hangman.target.focus()
+  // setInterval( function () {
+  //   hangman.handleInput('abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random()*26)])
+  // }, 500)
+}
+
 var game = {
   words: ['programming', 'function', 'variable', 'conditional', 'operator', 'javascript', 'HTML', 'CSS', 'development', 'front-end', 'back-end', 'full stack', 'encapsulation', 'inheritance', 'prototype', 'document', 'window', 'node', 'database'],
   target: document.body,
@@ -51,7 +66,7 @@ var game = {
         this.guesses.val.push(this.guess.value)
         this.guesses.value = this.guesses.val
         this.checkGuess()
-        this.guess.value = ''
+        // this.guess.value = ''
       } else return 0 //alert('no')
     }
   },
@@ -153,21 +168,5 @@ function RenderedVar(parent, target) {
   this.parentElement = parent || document.body
   this.target = target || document.createElement('div')
   this.render()
-}
-
-
-window.onload = function() {
-  var guess = document.getElementById('guess')
-  var guesses = document.getElementById('guesses')
-  var correctGuesses = document.getElementById('board')
-  var numWrong = document.getElementById('state')
-  hangman = new Game( 
-    document.getElementById('hangman'),
-    guess, correctGuesses, guesses, numWrong 
-    )
-  hangman.target.focus()
-  setInterval( function () {
-    hangman.handleInput('abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random()*26)])
-  }, 500)
 }
 
