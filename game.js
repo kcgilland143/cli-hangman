@@ -10,12 +10,12 @@ window.onload = function() {
     )
   hangmanGame.target.focus()
   // setInterval( function () {
-  //   hangman.handleInput('abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random()*26)])
+  //   hangmanGame.handleInput('abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random()*26)])
   // }, 500)
 }
 
 var game = {
-  words: ['programming', 'function', 'variable', 'conditional', 'operator', 'javascript', 'HTML', 'CSS', 'development', 'front-end', 'back-end', 'full stack', 'encapsulation', 'inheritance', 'prototype', 'document', 'window', 'node', 'database'],
+  words: ['programming', 'function', 'variable', 'conditional', 'operator', 'javascript', 'HTML', 'CSS', 'development', 'front-end', 'back-end', 'full stack', 'encapsulation', 'inheritance', 'prototype', 'document', 'window', 'node', 'database', 'console', 'inspector'],
   target: document.body,
   guess: '',
   guesses: [],
@@ -64,7 +64,7 @@ var game = {
   applyGuess: function() {
     if (this.guess.value) { 
       if (!this.guesses.value.includes(this.guess.value)) {
-        this.guesses.val.push(this.guess.value)
+        this.guesses.val.unshift(this.guess.value)
         this.guesses.value = this.guesses.val
         this.checkGuess()
         // this.guess.value = ''
@@ -198,11 +198,11 @@ function Canvas( target ) {
         ctx.beginPath()
         break;
       case 1: //base
-        ctx.moveTo(winc*2, hinc*10)
-        ctx.lineTo(winc*4, hinc*10)
+        ctx.moveTo(winc*2, hinc*12)
+        ctx.lineTo(winc*4, hinc*12)
         break;
       case 2: //vertical
-        ctx.moveTo(winc*3, hinc*10)
+        ctx.moveTo(winc*3, hinc*12)
         ctx.lineTo(winc*3, hinc*2)
         break;
       case 3: //horizontal support

@@ -1,23 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Play a Game</title>
+  <title>Play Hangman</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script type="text/javascript" src="game.js"></script>
 </head>
 
 <body>
-  <h1>Welcome to my Game</h1>
+  <h1>Hangman</h1>
   <div class="container">
     <div id="hangman" class="row" tabindex="0">
       <div class="col-md-8">
-        <h1 id="state">0</h1>
-        <canvas></canvas>
-        <h2 id="guess">Current Guess</h2>
+        <h1 id="category">Web Development</h1>
+        <h3 id="state">0</h3>
+        <canvas width='800' height='500'></canvas>
+        <h1 id="board">Correct Guesses</h1>
       </div>
       <div id="hangman-controls" class="col-md-4">
         <hr>
-        <h1 id="board">Correct Guesses</h1>
+          <span id="guess" class="h1">Current Guess</span>
         <em id="guesses">Guesses so far</em>
+      </div>
+      <div id="hangman-status" class="col-md-4">
+        <hr>
+        <div id="guess-status">
+          <span id="status-symbol" class="glyphicon"></span>
+          <span id="status-message" class='h1 hidden'>OK</span>
+        </div>
+        <div id="hangman-stats">
+          <h2>Wins: <em id="wins">0</em></h2>
+          <h2>Losses: <em id="losses">0</em></h2>
+        </div>
       </div>
     </div>
   </div>
