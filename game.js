@@ -4,11 +4,15 @@ window.onload = function() {
   var correctGuesses = document.getElementById('board')
   var numWrong = document.getElementById('state')
   var stateCanvas = document.getElementsByTagName('canvas')[0]
+  var wins = document.getElementById('wins')
+  var losses = document.getElementById('losses')
   hangmanGame = new Game( 
     document.getElementById('hangman'),
-    guess, correctGuesses, guesses, stateCanvas, numWrong 
+    guess, correctGuesses, guesses, stateCanvas,
+    numWrong, wins, losses 
     )
   hangmanGame.target.focus()
+  hangmanGame.start()
   // setInterval( function () {
   //   hangmanGame.handleInput('abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random()*26)])
   // }, 500)
@@ -21,6 +25,8 @@ var game = {
   guesses: [],
   correctGuesses: [],
   numWrongGuesses: 0,
+  wins: 0,
+  losses: 0,
 
   start: function()  {
     this.word = 'hi there'
@@ -75,8 +81,10 @@ var game = {
   gameOver: function() {
     var gO = 0
     if (this.numWrongGuesses.value >= 10) {
+      ++this.losses.value
       return 1
     } else if (!this.correctGuesses.val.includes('_')) {
+      ++this.wins.value
       return 2
     }
   },
@@ -123,7 +131,9 @@ var game = {
   }
 }
 
-function Game( targetElem, guessElem, correctGuessesElem, guessesElem, stateCanvas, numWrongGuessesElem) {
+function Game( targetElem, guessElem,
+  correctGuessesElem, guessesElem, stateCanvas, 
+  numWrongGuessesElem, winsElem, lossesElem) {
   Object.setPrototypeOf(this, game)
   this.target = targetElem || document.body
   this.guess = new RenderedVar ( this.target, guessElem )
@@ -136,7 +146,9 @@ function Game( targetElem, guessElem, correctGuessesElem, guessesElem, stateCanv
     this.stateCanvas.drawState(this.numWrongGuesses.val)
     return this.numWrongGuesses.val
   }.bind(this)
-  this.start()
+  this.wins = new RenderedVar( this.target, winsElem )
+  this.losses = new RenderedVar( this.target, lossesElem )
+  // this.start()
 }
 
 var renderedVar = {
