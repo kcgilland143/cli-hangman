@@ -3,11 +3,12 @@ window.onload = function() {
   var guesses = document.getElementById('guesses')
   var correctGuesses = document.getElementById('board')
   var numWrong = document.getElementById('state')
-  hangman = new Game( 
+  var stateCanvas = document.getElementsByTagName('canvas')[0]
+  hangmanGame = new Game( 
     document.getElementById('hangman'),
-    guess, correctGuesses, guesses, numWrong 
+    guess, correctGuesses, guesses, stateCanvas, numWrong 
     )
-  // hangman.target.focus()
+  hangmanGame.target.focus()
   // setInterval( function () {
   //   hangman.handleInput('abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random()*26)])
   // }, 500)
@@ -57,7 +58,7 @@ var game = {
         ++n
       }
     }
-    if (!n) { ++this.numWrongGuesses.value}
+    if (!n) { ++this.numWrongGuesses.value }
   },
 
   applyGuess: function() {
@@ -73,19 +74,19 @@ var game = {
 
   gameOver: function() {
     var gO = 0
-    if (this.numWrongGuesses.value >= 9) {
+    if (this.numWrongGuesses.value >= 10) {
       return 1
     } else if (!this.correctGuesses.val.includes('_')) {
       return 2
     }
   },
 
-  checkNewGame: function () {
+  checkNewGame: function () { //promptNewGame
     var gO = this.gameOver()
     if (gO) { 
       var cond = (gO > 1 ? 'You Won!' : 'You Lost!')
       setTimeout( function () {
-        var playAgain = true //confirm(cond + ' Game over, try again?')
+        var playAgain = confirm(cond + ' Game over, try again?')
         if (playAgain) { this.initialize() } 
       }.bind(this), 1)
     }
@@ -122,14 +123,19 @@ var game = {
   }
 }
 
-function Game( targetElem, guessElem, correctGuessesElem, guessesElem, numWrongGuessesElem) {
+function Game( targetElem, guessElem, correctGuessesElem, guessesElem, stateCanvas, numWrongGuessesElem) {
   Object.setPrototypeOf(this, game)
   this.target = targetElem || document.body
   this.guess = new RenderedVar ( this.target, guessElem )
-  this.guesses = new RenderedVar ( this.target, guessesElem )
   this.correctGuesses = new RenderedVar ( this.target, correctGuessesElem )
   this.correctGuesses.delimiter = ' '
+  this.guesses = new RenderedVar ( this.target, guessesElem )
+  this.stateCanvas = new Canvas( stateCanvas )
   this.numWrongGuesses = new RenderedVar ( this.target, numWrongGuessesElem )
+  this.numWrongGuesses.represent = function () {
+    this.stateCanvas.drawState(this.numWrongGuesses.val)
+    return this.numWrongGuesses.val
+  }.bind(this)
   this.start()
 }
 
@@ -149,7 +155,7 @@ var renderedVar = {
   },
 
   represent: function representValue() {
-    if (typeof this.val === 'object') { //array
+    if (this.val.constructor === Array) { //array
       return this.val.join(this.delimiter)
     }
     return this.val
@@ -170,3 +176,67 @@ function RenderedVar(parent, target) {
   this.render()
 }
 
+// ***-----****
+// ***|**-.-***
+// ***|***|****
+// **___*|*|***
+// ************
+
+function Canvas( target ) {
+  this.target = target
+  this.context = this.target.getContext('2d')
+  this.drawState = function drawState (state) {
+    var ctx=this.context
+    var w = this.target.clientWidth
+    var winc = w / 12
+    var h = this.target.clientHeight
+    var hinc = h / 12
+    switch (state) {
+      case 0:
+        ctx.closePath()
+        ctx.clearRect(0,0,w,h)
+        ctx.beginPath()
+        break;
+      case 1: //base
+        ctx.moveTo(winc*2, hinc*10)
+        ctx.lineTo(winc*4, hinc*10)
+        break;
+      case 2: //vertical
+        ctx.moveTo(winc*3, hinc*10)
+        ctx.lineTo(winc*3, hinc*2)
+        break;
+      case 3: //horizontal support
+        ctx.lineTo(winc*6, hinc*2)
+        break;
+      case 4: //head
+        ctx.closePath()
+        ctx.beginPath()
+        ctx.arc(winc*6, hinc*4, hinc*1, 0, Math.PI*2)
+        break;
+      case 5: //body
+        ctx.moveTo(winc*6, hinc*5)
+        ctx.lineTo(winc*6,hinc*8)
+        break;
+      case 6: //right leg
+        ctx.lineTo(winc*5,hinc*10)
+        break;
+      case 7: //left leg
+        ctx.moveTo(winc*6, hinc*8)
+        ctx.lineTo(winc*7,hinc*10)
+        break;
+      case 8: //right arm
+        ctx.moveTo(winc*6, hinc*5)
+        ctx.lineTo(winc*5,hinc*6)
+        break;
+      case 9: //left arm
+        ctx.moveTo(winc*6, hinc*5)
+        ctx.lineTo(winc*7,hinc*6)
+        break;
+      case 10: //connector
+        ctx.moveTo(winc*6, hinc*3)
+        ctx.lineTo(winc*6,hinc*2)
+        break;
+    }
+    ctx.stroke()
+  }
+}
