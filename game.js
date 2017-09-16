@@ -45,7 +45,7 @@ var game = {
       if (input.target === this.target) {
         if (input.which >= 65 && input.which <= 90) {
           this.guess.value = input.key
-        } else if (input.which === 13 && this.guess.value) {
+       // } else if (input.which === 13 && this.guess.value) {
           this.applyGuess()
         }
       }
@@ -53,7 +53,7 @@ var game = {
     this.checkNewGame()
   },
 
-  checkGuess: function() {
+  checkGuess: function() { //Apply guess to secret word, update to game board
     var n = 0
     var tempArr = []
     for (var i = 0; i < this.word.length; ++i) {
@@ -65,16 +65,26 @@ var game = {
       }
     }
     if (!n) { ++this.numWrongGuesses.value }
+    return n
   },
 
   applyGuess: function() {
     if (this.guess.value) { 
-      if (!this.guesses.value.includes(this.guess.value)) {
-        this.guesses.val.unshift(this.guess.value)
-        this.guesses.value = this.guesses.val
-        this.checkGuess()
-        // this.guess.value = ''
-      } else return 0 //alert('no')
+      //ensure guess hasn't already been guessed
+      var repeatGuess = this.guesses.value.includes(this.guess.value)
+      if ( repeatGuess ) {
+        if ( !this.guess.target.className.includes("warn") ) {
+          this.guess.target.className += " warn"
+          return 0 
+        }
+      } else { this.guess.target.setAttribute("class", "h1") } // reset default
+      var tempElem = hangmanGame.guess.target.cloneNode( true )
+      this.guesses.val.unshift( this.guess.value )
+      this.guesses.target.insertBefore( tempElem, this.guesses.target.firstChild )
+      tempElem.removeAttribute("id", "")
+      if ( this.checkGuess() && !repeatGuess ) {
+        tempElem.setAttribute("class", "correct")
+      } else { tempElem.setAttribute("class", "incorrect") }
     }
   },
 
@@ -96,7 +106,7 @@ var game = {
       setTimeout( function () {
         var playAgain = confirm(cond + ' Game over, try again?')
         if (playAgain) { this.initialize() } 
-      }.bind(this), 1)
+      }.bind(this), 10)
     }
   },
 
@@ -168,6 +178,7 @@ var renderedVar = {
 
   represent: function representValue() {
     if (this.val.constructor === Array) { //array
+      console.log(this.val)
       return this.val.join(this.delimiter)
     }
     return this.val
@@ -181,10 +192,11 @@ var renderedVar = {
   }
 }
 
-function RenderedVar(parent, target) {
+function RenderedVar(parent, target, value) {
   Object.setPrototypeOf(this, renderedVar)
   this.parentElement = parent || document.body
   this.target = target || document.createElement('div')
+  this.val = value || ''
   this.render()
 }
 
