@@ -64,7 +64,6 @@ var game = {
         ++n
       }
     }
-    if (!n) { ++this.numWrongGuesses.value }
     return n
   },
 
@@ -79,12 +78,18 @@ var game = {
         }
       } else { this.guess.target.setAttribute("class", "h1") } // reset default
       var tempElem = hangmanGame.guess.target.cloneNode( true )
+      if (this.guesses.target.hasChildNodes) {
+        tempElem.appendChild( document.createTextNode( this.guesses.delimiter ))
+      }
       this.guesses.val.unshift( this.guess.value )
       this.guesses.target.insertBefore( tempElem, this.guesses.target.firstChild )
       tempElem.removeAttribute("id", "")
       if ( this.checkGuess() && !repeatGuess ) {
         tempElem.setAttribute("class", "correct")
-      } else { tempElem.setAttribute("class", "incorrect") }
+      } else { 
+        tempElem.setAttribute("class", "incorrect")
+        ++this.numWrongGuesses.value
+       }
     }
   },
 
